@@ -1,5 +1,3 @@
 [submodule "signaling/src/glog"]
 	path = signaling/src/glog
-	url = https://github.com/HuntCode/glog.git
-[submodule "glog"]
 	url = git@github.com:HuntCode/glog.git

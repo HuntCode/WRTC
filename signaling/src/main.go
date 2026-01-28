@@ -15,8 +15,8 @@ func main() {
 		panic(err)
 	}
 
-	glog.Info("hello go")
-	glog.Flush()
+	glog.SetLogToStderr(true)
+	glog.Info("hello go go go")
 
 	err = framework.StartHttp()
 	if err != nil {

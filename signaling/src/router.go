@@ -6,5 +6,6 @@ import (
 )
 
 func init() {
+	framework.GActionRouter["/signaling/push"] = action.NewPushAction()
 	framework.GActionRouter["/wrtcclient/push"] = action.NewWRTCClientPushAction()
 }

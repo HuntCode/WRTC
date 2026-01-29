@@ -74,3 +74,7 @@ func loadConf(confFile string) (*FrameworkConf, error) {
 
 	return conf, nil
 }
+
+func GetStaticDir() string {
+	return gconf.httpStaticDir
+}

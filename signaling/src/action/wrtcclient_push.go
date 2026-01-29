@@ -2,6 +2,7 @@ package action
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"signaling/src/framework"
 )
@@ -18,5 +19,23 @@ func writeHtmlErrorResponse(w http.ResponseWriter, status int, err string) {
 }
 
 func (*wrtcClientPushAction) Execute(w http.ResponseWriter, cr *framework.ComRequest) {
-	fmt.Println("hello wrtcclient push action")
+	t, err := template.ParseFiles(framework.GetStaticDir() + "/template/push.tpl")
+	if err != nil {
+		fmt.Println(err)
+		writeHtmlErrorResponse(w, http.StatusNotFound, "404 - Not found")
+		return
+	}
+
+	request := make(map[string]string)
+
+	for k, v := range cr.R.Form {
+		request[k] = v[0]
+	}
+
+	err = t.Execute(w, request)
+	if err != nil {
+		fmt.Println(err)
+		writeHtmlErrorResponse(w, http.StatusNotFound, "404 - Not found")
+		return
+	}
 }

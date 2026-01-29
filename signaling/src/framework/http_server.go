@@ -3,6 +3,7 @@ package framework
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func init() {
@@ -26,6 +27,18 @@ func responseError(w http.ResponseWriter, r *http.Request, status int, err strin
 	w.Write([]byte(fmt.Sprintf("%d - %s", status, err)))
 }
 
+func getRealClientIP(r *http.Request) string {
+	ip := r.RemoteAddr
+
+	if rip := r.Header.Get("X-Real-IP"); rip != "" {
+		ip = rip
+	} else if rip = r.Header.Get("X-Forwarded-IP"); rip != "" {
+		ip = rip
+	}
+
+	return ip
+}
+
 func entry(w http.ResponseWriter, r *http.Request) {
 	if "/favicon.ico" == r.URL.Path {
 		w.WriteHeader(http.StatusOK)
@@ -41,8 +54,24 @@ func entry(w http.ResponseWriter, r *http.Request) {
 				Logger: &ComLog{},
 				LogId:  GetLogId32(),
 			}
+
+			cr.Logger.AddNotice("logId", strconv.Itoa(int(cr.LogId)))
+			cr.Logger.AddNotice("url", r.URL.Path)
+			cr.Logger.AddNotice("referer", r.Header.Get("Referer"))
+			cr.Logger.AddNotice("cookie", r.Header.Get("Cookie"))
+			cr.Logger.AddNotice("ua", r.Header.Get("User-Agent"))
+			cr.Logger.AddNotice("clientIP", r.RemoteAddr)
+			cr.Logger.AddNotice("realClientIP", getRealClientIP(r))
+
 			r.ParseForm()
+
+			for k, v := range r.Form {
+				cr.Logger.AddNotice(k, v[0])
+			}
+
+			cr.Logger.TimeBegin("totalCost")
 			action.Execute(w, cr)
+			cr.Logger.TimeEnd("totalCost")
 
 			cr.Logger.Infof("")
 		} else {

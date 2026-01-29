@@ -1,3 +1,6 @@
 [submodule "signaling/src/glog"]
 	path = signaling/src/glog
 	url = git@github.com:HuntCode/glog.git
+[submodule "signaling/src/goconfig"]
+	path = signaling/src/goconfig
+	url = git@github.com:unknwon/goconfig.git

@@ -3,21 +3,32 @@ package main
 import (
 	"flag"
 	"signaling/src/framework"
-
-	"github.com/golang/glog"
 )
 
 func main() {
 	flag.Parse()
 
-	err := framework.Init()
+	err := framework.Init("./conf/framework.conf")
 	if err != nil {
 		panic(err)
 	}
 
-	glog.Info("hello go 666")
+	framework.RegisterStaticUrl()
 
-	err = framework.StartHttp()
+	go startHttp()
+
+	startHttps()
+}
+
+func startHttp() {
+	err := framework.StartHttp()
+	if err != nil {
+		panic(err)
+	}
+}
+
+func startHttps() {
+	err := framework.StartHttps()
 	if err != nil {
 		panic(err)
 	}

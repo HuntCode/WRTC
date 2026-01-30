@@ -20,5 +20,11 @@ func Init(confFile string) error {
 	glog.SetLogDir(gconf.logDir)
 	glog.SetLogFilename(gconf.logFile)
 	glog.SetLogToStderr(gconf.logToStderr)
+
+	err = loadWrpc()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
